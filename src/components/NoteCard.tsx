@@ -1,28 +1,41 @@
 "use client";
 
+import { useNotes } from "@/context/NoteContext";
+import { Note } from "@prisma/client";
 import { useRouter } from "next/navigation";
+import { HiTrash, HiPencil } from "react-icons/hi";
 
-function NoteCard({ note }) {
+function NoteCard({ note }: { note: Note }) {
   const router = useRouter();
+  const { deleteNote, setSelectedNote, titleRef} = useNotes();
 
   return (
-    <div key={note.id} className="bg-slate-300 p-4 mb-2">
-      <h2>{note.title}</h2>
-      <p>{note.content}</p>
-      <button
-        onClick={async () => {
-          await fetch(`/api/notes/${note.id}`, {
-            method: "DELETE",
-          });
-          router.refresh();
-        }}
-      >
-        delete
-      </button>
+    <div key={note.id} className="bg-slate-300 p-4 mb-2 flex justify-between">
+      <div>
+        <h2 className="text-2xl font-bold">{note.title}</h2>
+        <p>{note.content}</p>
+        <p>{note.createdAt}</p>
+      </div>
+      <div className="flex gap-x-2">
+        <button
+          onClick={async () => {
+            if (confirm("Are you sure?")) {
+              await deleteNote(note.id);
+            }
+          }}
+        >
+          <HiTrash className="text-2xl text-red-600" />
+        </button>
 
-      <button>
-        <a href={`/notes/${note.id}`}>edit</a>
-      </button>
+        <button
+          onClick={() => {
+            setSelectedNote(note);
+            titleRef.current.focus();
+          }}
+        >
+          <HiPencil className="text-2xl" />
+        </button>
+      </div>
     </div>
   );
 }
