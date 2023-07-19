@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import {} from "@/lib/prisma";
+import { prisma } from "@/lib/prisma";
 
 export async function GET(request: Request) {
   try {
@@ -11,7 +11,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json(notes);
   } catch (error) {
-    return NextResponse.error(error, { status: 500 });
+    return NextResponse.json(error, { status: 500 });
   }
 }
 
@@ -28,6 +28,6 @@ export async function POST(request: Request) {
 
     return NextResponse.json(newNote);
   } catch (error) {
-    return NextResponse.error(error, { status: 500 });
+    return NextResponse.json(error, { status: 500 });
   }
 }
